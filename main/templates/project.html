@@ -1,0 +1,108 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projects</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- CSS (kept as your relative paths) -->
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="stylesheet" href="{% static 'css/project.css' %}">
+</head>
+
+<body>
+  <header>
+    <ul class="nav-menu">
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
+    </ul>
+  </header>
+
+  <!-- Optional messages (success/error after post/delete) -->
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="message {{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <main>
+    <!-- Project card -->
+    <div class="project-card">
+      <!-- Project info -->
+      <div class="project-info">
+        <h1>{{ project.title }}</h1>
+
+        {% if project.link %}
+          <p><a href="{{ project.link }}" target="_blank" rel="noopener">Project Link</a></p>
+        {% endif %}
+
+        <p>{{ project.description }}</p>
+        <a href="{% url 'home' %}">Back to Home</a>
+      </div>
+
+      <!-- Carousel -->
+      <div class="carousel">
+        <div class="carousel-images">
+          <!-- To do: Replace with actual screenshots -->
+          <div class="carousel-item"><img src="{% static 'images/img1.png' %}" alt="Project screenshot 1"></div>
+          <div class="carousel-item"><img src="{% static 'images/img2.png' %}" alt="Project screenshot 2"></div>
+        </div>
+        <a class="carousel-control prev" onclick="moveSlide(-1)">&#10094;</a>
+        <a class="carousel-control next" onclick="moveSlide(1)">&#10095;</a>
+      </div>
+    </div>
+
+    <!-- COMMENTS -->
+    <section class="comments">
+      <h2>Comments</h2>
+
+      <!-- Create comment (logged-in users only) -->
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'comment_create' id=project.id %}" class="comment-form">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          <div class="form-group">
+            {{ form.content.errors }}
+            {{ form.content }}
+          </div>
+          <button type="submit" class="btn">Post Comment</button>
+        </form>
+      {% else %}
+        <p><a href="{% url 'auth_login' %}">Log in</a> to leave a comment.</p>
+      {% endif %}
+
+      <!-- List comments -->
+      <ul class="comment-list">
+        {% for c in comments %}
+          <li class="comment-item">
+            <div class="comment-header">
+              <strong>{{ c.user.username }}</strong>
+              <span class="comment-date">{{ c.created_at|date:"Y-m-d H:i" }}</span>
+            </div>
+            <p class="comment-content">{{ c.content }}</p>
+
+            {% if user.is_authenticated and c.user_id == user.id or user.is_staff %}
+              <form method="post" action="{% url 'comment_delete' id=project.id comment_id=c.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-delete" onclick="return confirm('Delete this comment?');">Delete</button>
+              </form>
+            {% endif %}
+          </li>
+        {% empty %}
+          <li>No comments yet. Be the first!</li>
+        {% endfor %}
+      </ul>
+    </section>
+  </main>
+
+  <!-- JS -->
+  <script src="{% static 'js/project.js' %}" defer></script>
+</body>
+</html>
