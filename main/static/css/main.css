@@ -320,6 +320,25 @@ ul svg {
   background: rgba(47, 187, 170, 0.2);
 }
 
+/* copyright line under footer */
+
+.copyright {
+  margin-top: 0.75rem;
+  padding-top: 0.25rem;
+  font-size: 0.75rem;
+  color: rgba(38, 42, 46, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.copyright .social {
+  width: 16px;
+  height: 16px;
+  fill: var(--H2H3P-Colour);  /* mint accent */
+}
+
 
 /* authorisation modal */
 
