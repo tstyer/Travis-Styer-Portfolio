@@ -9,7 +9,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from .models import Project, Tag, Comment
-from .forms import CommentForm
+from .forms import CommentForm, ContactForm
 
 from datetime import datetime
 
@@ -38,6 +38,28 @@ def contact(request):
         return redirect("contact")
 
     return render(request, "contact.html")
+
+
+def contact_view(request):
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Access validated data safely
+            name = form.cleaned_data["name"]
+            email = form.cleaned_data["email"]
+            message_text = form.cleaned_data["message"]
+
+            # TODO: handle the form (send email, save to DB, etc.)
+
+            messages.success(request, "Your message has been sent successfully!")
+            return redirect("contact")  
+        else:
+            # Form is invalid: fall through and re-render with errors
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = ContactForm()
+
+    return render(request, "contact.html", {"form": form})
 
 
 def about(request):

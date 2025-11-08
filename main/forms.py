@@ -13,3 +13,31 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["content"]
+
+
+class ContactForm(forms.Form):
+    name = forms.CharField(
+        max_length=100,
+        required=True,
+        label="Name",
+        widget=forms.TextInput(attrs={"placeholder": "Your name"})
+    )
+    email = forms.EmailField(
+        required=True,
+        label="Email",
+        widget=forms.EmailInput(attrs={"placeholder": "Your email"})
+    )
+    message = forms.CharField(
+        required=True,
+        label="Message",
+        widget=forms.Textarea(attrs={"placeholder": "Your message"})
+    )
+
+    # extra custom validation example
+    def clean_message(self):
+        data = self.cleaned_data["message"]
+        if len(data.strip()) < 10:
+            raise forms.ValidationError(
+                "Please enter at least 10 characters so I can respond meaningfully."
+            )
+        return data
