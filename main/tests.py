@@ -9,9 +9,9 @@ from .models import Project, Comment
 
 @override_settings(
     STATICFILES_STORAGE="django.contrib.staticfiles.storage.StaticFilesStorage")
-
-class ViewTests(TestCase): # Creating one test class for all.
+class ViewTests(TestCase):  # Creating one test class for all.
     def setUp(self):
+        self.User = get_user_model()
         self.project = Project.objects.create(
             title="Test project",
             description="Test description",
@@ -36,7 +36,6 @@ class ViewTests(TestCase): # Creating one test class for all.
         self.assertIsNotNone(projects_in_context)
         self.assertIn(self.project, projects_in_context)
 
-
     def test_project_detail_returns_200(self):
         """
         Project detail view should return HTTP 200
@@ -56,9 +55,9 @@ class ViewTests(TestCase): # Creating one test class for all.
         self.assertIsNotNone(project_in_context)
         self.assertEqual(project_in_context, self.project)
 
-    # Comment test:   
+    # Comment test:
 
-     def test_comment_create_authenticated_user(self):
+    def test_comment_create_authenticated_user(self):
         """
         Authenticated Django user can create a comment.
         Comment.user should be set, author_name should be blank.
@@ -68,7 +67,7 @@ class ViewTests(TestCase): # Creating one test class for all.
         )
         self.client.login(username="tester", password="password123")
 
-        url = reverse("comment_create", kwargs={"project_id": self.project.id})
+        url = reverse("comment_create", kwargs={"id": self.project.id})
         response = self.client.post(
             url,
             {"content": "Test"},  # match form field name
@@ -95,7 +94,7 @@ class ViewTests(TestCase): # Creating one test class for all.
         session["author_name"] = "Sheet Tester"
         session.save()
 
-        url = reverse("comment_create", kwargs={"project_id": self.project.id})
+        url = reverse("comment_create", kwargs={"id": self.project.id})
         response = self.client.post(
             url,
             {"content": "Feedback from sheet user"},
@@ -117,7 +116,7 @@ class ViewTests(TestCase): # Creating one test class for all.
         Unauthenticated user with no session/sheet data should NOT create a comment.
         Expect a redirect (e.g. to login) or some kind of refusal.
         """
-        url = reverse("comment_create", kwargs={"project_id": self.project.id})
+        url = reverse("comment_create", kwargs={"id": self.project.id})
         response = self.client.post(
             url,
             {"content": "Should not be saved"},
