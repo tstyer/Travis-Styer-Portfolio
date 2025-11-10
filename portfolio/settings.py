@@ -33,6 +33,9 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+# if Degub doesn't exist: 
+DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1")
+
 ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
 
