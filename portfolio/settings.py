@@ -24,11 +24,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('django-insecure-=q5h-#$kl-i*%jvvw2=msuv0cw%ww41q&rnpvg^_&5_m4!2e8%')
+# SECRET_KEY = 'django-insecure-=q5h-#$kl-i*%jvvw2=msuv0cw%ww41q&rnpvg^_&5_m4!2e8%'
+SECRET_KEY = os.environ.get(SECRET_KEY)
 
 if not SECRET_KEY:
-    # Local-only fallback – never commit this key or treat it as “real”
+    # Local development fallback – safe to use only on own machine.
+    # For production, always set SECRET_KEY in the environment.
     SECRET_KEY = "dev-secret-key-change-me"
+    print("WARNING: Using fallback SECRET_KEY. "
+          "Set the SECRET_KEY environment variable in production.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
