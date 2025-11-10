@@ -7,12 +7,12 @@
 }
 
 .contact-card {
-  width: min(600px, 100%);
-  margin: 0 auto 2rem;
-  padding: 1.75rem 2rem;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 16px;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+  width: min(720px, 100%);
+  margin: 0 auto 2.5rem;
+  padding: 2.25rem 2.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
   text-align: left;
 }
 
@@ -21,33 +21,39 @@
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
 
 .form-row {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  margin-bottom: 1.1rem;
 }
 
 .form-row label {
   font-family: var(--font-body);
-  font-size: 0.85rem;
-  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--H2H3P-Colour);
 }
 
+/* make sure the Django-rendered fields look like proper inputs */
 .form-row input,
 .form-row textarea {
   font-family: var(--font-body);
   font-size: 0.95rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
   border: 1px solid rgba(47, 187, 170, 0.35);
-  background: rgba(255, 255, 255, 0.95);
+  background: #ffffff;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-row textarea {
+  min-height: 140px;
+  resize: vertical;
 }
 
 .form-row input:focus,
@@ -59,14 +65,17 @@
 /* Submit button – uses .tag from main.css */
 
 .contact-submit {
+  width: 100%;
   margin-top: 0.5rem;
-  padding: 0.45rem 1.5rem;
-  font-size: 0.9rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 0.95rem;
 }
+
+/* flash messages */
 
 .flash-messages {
   margin: 1rem auto 0;
-  width: min(600px, 100%);
+  width: min(720px, 100%);
 }
 
 .flash {
@@ -78,4 +87,3 @@
   font-size: 0.9rem;
   text-align: center;
 }
-
