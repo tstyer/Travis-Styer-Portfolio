@@ -38,7 +38,7 @@
   color: var(--H2H3P-Colour);
 }
 
-/* HARD override: make sure fields are visible */
+/* HARD override: make sure fields are clearly visible */
 .contact-card input,
 .contact-card textarea,
 .contact-card select {
@@ -48,8 +48,8 @@
   font-size: 0.95rem;
   padding: 0.6rem 0.8rem;
   border-radius: 10px;
-  border: 1px solid rgba(47, 187, 170, 0.35) !important;
-  background-color: #ffffff !important;
+  border: 1px solid rgba(47, 187, 170, 0.75) !important;
+  background-color: #f5fffb !important;
   color: var(--color-text);
   outline: none;
   box-shadow: none !important;
@@ -64,36 +64,11 @@
 .contact-card input:focus,
 .contact-card textarea:focus,
 .contact-card select:focus {
-  border-color: rgba(47, 187, 170, 0.75) !important;
-  box-shadow: 0 0 0 3px rgba(47, 187, 170, 0.15) !important;
-}
-
-/* make sure the Django-rendered fields look like proper inputs */
-.form-row input,
-.form-row textarea {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  padding: 0.6rem 0.8rem;
-  border-radius: 10px;
-  border: 1px solid rgba(47, 187, 170, 0.35);
-  background: #ffffff;
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.form-row textarea {
-  min-height: 140px;
-  resize: vertical;
-}
-
-.form-row input:focus,
-.form-row textarea:focus {
-  border-color: rgba(47, 187, 170, 0.75);
-  box-shadow: 0 0 0 3px rgba(47, 187, 170, 0.15);
+  border-color: #2fbbaa !important;
+  box-shadow: 0 0 0 3px rgba(47, 187, 170, 0.18) !important;
 }
 
 /* Submit button – uses .tag from main.css */
-
 .contact-submit {
   width: 100%;
   margin-top: 0.5rem;
