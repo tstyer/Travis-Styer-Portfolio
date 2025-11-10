@@ -27,34 +27,16 @@ def contact(request):
     Handle contact form submissions and render the contact page.
     """
     if request.method == "POST":
-        name = request.POST.get("name", "").strip()
-        email = request.POST.get("email", "").strip()
-        subject = request.POST.get("subject", "").strip()
-        message_text = request.POST.get("message", "").strip()
-
-        # Form data can be processed here if needed 
-
-        messages.success(request, "Message received. A response will be sent if required.")
-        return redirect("contact")
-
-    return render(request, "contact.html")
-
-
-def contact_view(request):
-    if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            # Access validated data safely
             name = form.cleaned_data["name"]
             email = form.cleaned_data["email"]
+            subject = form.cleaned_data["subject"]
             message_text = form.cleaned_data["message"]
 
-            # TODO: handle the form (send email, save to DB, etc.)
-
-            messages.success(request, "Your message has been sent successfully!")
-            return redirect("contact")  
+            messages.success(request, "Message sent successfully.")
+            return redirect("contact")
         else:
-            # Form is invalid: fall through and re-render with errors
             messages.error(request, "Please correct the errors below.")
     else:
         form = ContactForm()
