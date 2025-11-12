@@ -35,7 +35,7 @@ if not SECRET_KEY:
           "Set the SECRET_KEY environment variable in production.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # if Degub doesn't exist: 
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1")
