@@ -1,0 +1,94 @@
+/* Contact form / page layout */
+
+.contact-section {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.contact-card {
+  width: min(720px, 100%);
+  margin: 0 auto 2.5rem;
+  padding: 2.25rem 2.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
+  text-align: left;
+}
+
+/* Form elements */
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.1rem;
+}
+
+.form-row label {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--H2H3P-Colour);
+}
+
+/* HARD override: make sure fields are clearly visible */
+.contact-card input,
+.contact-card textarea,
+.contact-card select {
+  display: block;
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid rgba(47, 187, 170, 0.75) !important;
+  background-color: #f5fffb !important;
+  color: var(--color-text);
+  outline: none;
+  box-shadow: none !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-card textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.contact-card input:focus,
+.contact-card textarea:focus,
+.contact-card select:focus {
+  border-color: #2fbbaa !important;
+  box-shadow: 0 0 0 3px rgba(47, 187, 170, 0.18) !important;
+}
+
+/* Submit button – uses .tag from main.css */
+.contact-submit {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 0.95rem;
+}
+
+/* flash messages */
+
+.flash-messages {
+  margin: 1rem auto 0;
+  width: min(720px, 100%);
+}
+
+.flash {
+  background: rgba(47, 187, 170, 0.12);
+  border: 1px solid rgba(47, 187, 170, 0.45);
+  color: #249988;
+  padding: 0.6rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  text-align: center;
+}

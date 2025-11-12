@@ -1,0 +1,115 @@
+/*  About page hero */
+
+.about-hero {
+  padding: 3.5rem 0 4rem;
+  display: flex;
+  justify-content: center;
+}
+
+.about-hero-inner {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+.about-copy {
+  flex: 1;
+  text-align: left;
+}
+
+.about-copy h1 {
+  margin-bottom: 0.75rem;
+}
+
+.about-lede {
+  font-size: 1.05rem;
+  color: var(--H2H3P-Colour);
+  margin-bottom: 0.75rem;
+}
+
+.about-copy p {
+  max-width: 36rem;
+  margin-bottom: 0.6rem;
+}
+
+.about-illustration {
+  flex: 0 0 220px;
+}
+
+.about-illustration img {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+}
+
+/* default: show desktop image, hide mobile one */
+.about-illustration--mobile {
+  display: none;
+}
+
+.about-illustration--desktop {
+  display: block;
+}
+
+/* below 500px: stack, and move image between paragraphs */
+@media (max-width: 500px) {
+  .about-hero-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .about-illustration--desktop {
+    display: none;              /* hide side image */
+  }
+
+  .about-illustration--mobile {
+    display: block;             /* show inline image */
+    margin: 1.25rem auto;
+    max-width: 220px;
+  }
+
+  .about-copy {
+    text-align: left;
+  }
+}
+
+/* default: desktop */
+.about-illustration--mobile {
+  display: none;          /* hide the inline image on desktop */
+}
+
+.about-illustration--desktop {
+  display: block;         /* show the right-hand avatar */
+}
+
+/* mobile layout */
+@media (max-width: 500px) {
+  .about-hero-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  /* don’t force flex sizing on mobile */
+  .about-illustration {
+    flex: none;
+  }
+
+  .about-illustration--desktop {
+    display: none;        /* hide side image */
+  }
+
+  .about-illustration--mobile {
+    display: block;       /* show image between paragraphs */
+    margin: 1.25rem auto;
+    max-width: 220px;
+  }
+
+  .about-copy {
+    text-align: left;
+  }
+}

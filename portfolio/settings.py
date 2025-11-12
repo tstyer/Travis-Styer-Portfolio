@@ -35,12 +35,12 @@ if not SECRET_KEY:
           "Set the SECRET_KEY environment variable in production.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # if Degub doesn't exist: 
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1")
 
-ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "[::1]", ".herokuapp.com"]
 
 
 # Application definition
