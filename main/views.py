@@ -18,8 +18,9 @@ from datetime import datetime
 def home(request):
     projects = Project.objects.all()  # Gives access to all projects on the home page.
     tags = Tag.objects.all()
-     Rendering just means to show on the screen.
-   return render(request, "index.html", {"projects": projects, "tags": tags})
+    # Rendering just means to show on the screen.
+    return render(request, "index.html", {"projects": projects, "tags": tags})
+
 
 
 

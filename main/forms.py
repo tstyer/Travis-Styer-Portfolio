@@ -27,10 +27,15 @@ class ContactForm(forms.Form):
         label="Email",
         widget=forms.EmailInput(attrs={"placeholder": "Your email"})
     )
+    subject = forms.CharField(
+        required=True,
+        label="Subject",
+        widget=forms.TextInput(attrs={"placeholder": ""})
+    )
     message = forms.CharField(
         required=True,
         label="Message",
-        widget=forms.Textarea(attrs={"placeholder": "Your message"})
+        widget=forms.Textarea(attrs={"placeholder": "Ask me anything!"})
     )
 
     # extra custom validation example
