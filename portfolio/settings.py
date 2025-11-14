@@ -5,18 +5,14 @@ Django settings for portfolio project.
 from pathlib import Path
 import os
 import dj_database_url
-
-if os.path.isfile("env.py"):
+if os.path.isfile('env.py'):
     import env
 
-# -------------------------
 # Paths
-# -------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# -------------------------
+
 # Security
-# -------------------------
 SECRET_KEY = os.environ.get("SECRET_KEY")
 if not SECRET_KEY:
     # Local-only fallback. Never use in production.
@@ -31,9 +27,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "[::1]", ".herokuapp.com"]
 
-# -------------------------
 # Apps
-# -------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -76,19 +70,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "portfolio.wsgi.application"
 
-# -------------------------
+
 # Database (sqlite local)
-# -------------------------
+#DATABASES = {
+#    "default": {
+#        "ENGINE": "django.db.backends.sqlite3",
+#        "NAME": BASE_DIR / "db.sqlite3",
+#    }
+#}
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
-# -------------------------
 # Password validation
-# -------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -96,17 +91,14 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# -------------------------
+
 # I18N
-# -------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# -------------------------
-# Static & Media
-# -------------------------
+# Static
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
@@ -124,15 +116,12 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# -------------------------
-# Google (your existing values)
-# -------------------------
+
+# Google 
 GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, "creds.json")
 GOOGLE_SHEET_ID = "1NaIYrKXeWzqj9zHOwyd8vR0sTMlXG0mdmiDu-BNCSQU"
 
-# -------------------------
 # Helpful logging to console (even if DEBUG=False)
-# -------------------------
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
