@@ -1,36 +1,129 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sign in to comment</title>
+
+    <!-- Font Awesome (self-hosted) -->
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/all.min.css' %}" crossorigin>
+
+    <!-- Bootstrap (self-hosted) -->
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/contact.css' %}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/new_icon.png' %}">
   </head>
-  <body>
-    <h1>Sign in to comment</h1>
 
-    {% if messages %}
-      <ul>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+  <body class="wrapper">
 
-    <form method="post">
-      {% csrf_token %}
-      <p>
-        <label for="id_email">Email</label><br>
-        <input type="email" name="email" id="id_email" required value="{{ email|default:'' }}">
-      </p>
+    <!-- NAVBAR (same structure as other pages) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">
+          Travis Styer
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <p>
-        <label for="id_password">Password</label><br>
-        <input type="password" name="password" id="id_password" required>
-      </p>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}"
+                 href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link{% if request.resolver_match.url_name == 'about' %} active{% endif %}"
+                 href="{% url 'about' %}">About Me</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link{% if request.resolver_match.url_name == 'contact' %} active{% endif %}"
+                 href="{% url 'contact' %}">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-      <input type="hidden" name="next" value="{{ request.GET.next|default:request.META.HTTP_REFERER }}">
+    <!-- MAIN CONTENT -->
+    <main class="container my-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+          <div class="card shadow-lg">
+            <div class="card-body p-4">
+              <h1 class="h4 mb-3 text-center">Sign in to comment</h1>
+              <p class="text-muted text-center mb-4">
+                Use your comment account to sign in and leave feedback on projects.
+              </p>
 
-      <button type="submit">Sign in</button>
-    </form>
+              {% if messages %}
+                <div class="mb-3">
+                  {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} mb-2">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="mb-3">
+                  <label for="id_email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    id="id_email"
+                    class="form-control"
+                    required
+                    value="{{ email|default:'' }}"
+                    placeholder="you@example.com"
+                  >
+                </div>
+
+                <div class="mb-3">
+                  <label for="id_password" class="form-label">Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    id="id_password"
+                    class="form-control"
+                    required
+                    placeholder="Your password"
+                  >
+                </div>
+
+                <!-- Redirect back to the page the user came from -->
+                <input type="hidden" name="next"
+                       value="{{ request.GET.next|default:request.META.HTTP_REFERER }}">
+
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary">
+                    Sign in
+                  </button>
+                </div>
+              </form>
+
+              <p class="mt-3 mb-0 text-center small text-muted">
+                Changed your mind? <a href="{% url 'home' %}">Go back to projects</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bootstrap JS (self-hosted) -->
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   </body>
 </html>
