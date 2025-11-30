@@ -36,6 +36,7 @@ body {
     #E4F8F2 45%,
     #F6FAFF 100%
   );
+  background-attachment: fixed; 
   padding: 20px;
   display: flex;
   flex-direction: column;
