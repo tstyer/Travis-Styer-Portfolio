@@ -38,9 +38,10 @@
           <a class="nav-link active" aria-current="page" href="{% url 'about' %}">About Me</a>
         </li>
       </ul>
-
+       <!-- Logged in: show Sign out -->
+      <div class="auth-container">
       {% if request.user.is_authenticated or request.session.user_email %}
-    <!-- Logged in: show Sign out -->
+   
     <form method="post" action="{% url 'auth_logout' %}">
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request.path }}">
@@ -52,6 +53,7 @@
       Sign in / Register
     </button>
   {% endif %}
+  </div>
     </nav>
 
     <header>

@@ -139,6 +139,25 @@ a, h1 strong {
   color: #fff;
 }
 
+/* Nav: Sign-out */
+
+.site-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.auth-container {
+    margin-left: auto; /* push the container to the right */
+}
+
+.nav-auth-btn {
+    margin-left: 1rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+
+
 /* Tagline */
 
 .tag-line {
