@@ -20,4 +20,7 @@ urlpatterns = [
     # For user log-in
     path("auth/login/", views.auth_login, name="auth_login"),
     path("auth/register/", views.auth_register, name="auth_register"),
+
+    # NEW: Logout endpoint
+    path("auth/logout/", views.auth_logout, name="auth_logout"),
 ]
