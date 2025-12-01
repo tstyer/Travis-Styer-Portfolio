@@ -7,6 +7,7 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.conf import settings
 from django.utils import timezone
+import gspread
 
 from .models import Project, Tag, Comment
 from .forms import CommentForm, ContactForm
@@ -188,15 +189,13 @@ def comment_delete(request, id, comment_id):
 
 # this is a Google Sheet helper / auth 
 def get_users_sheet():
-    """
-    Returns the Google Sheet worksheet that stores users.
-    Assumes credentials configured in settings.
-    """
-    import gspread 
-    
-    gc = gspread.service_account(filename=settings.GOOGLE_SERVICE_ACCOUNT_FILE)
-    sh = gc.open_by_key(settings.GOOGLE_SHEET_ID)  # set in settings
-    ws = sh.worksheet("user")  # sheet/tab name
+    if getattr(settings, "GOOGLE_CREDS_DICT", None):
+        gc = gspread.service_account_from_dict(settings.GOOGLE_CREDS_DICT)
+    else:
+        gc = gspread.service_account(filename=settings.GOOGLE_SERVICE_ACCOUNT_FILE)
+
+    sh = gc.open_by_key(settings.GOOGLE_SHEET_ID)
+    ws = sh.worksheet("user")
     return ws
 
 
