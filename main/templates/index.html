@@ -25,6 +25,7 @@
     <!-- NavBar -->
     <nav class="site-nav">
       <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+
       <ul class="nav justify-content-center nav-menu">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
@@ -36,24 +37,22 @@
           <a class="nav-link" href="{% url 'about' %}">About Me</a>
         </li>
       </ul>
-      <!-- Logged in: show Sign out -->
+
       <div class="auth-container">
-      {% if request.user.is_authenticated or request.session.user_email %}
-   
-    <form method="post" action="{% url 'auth_logout' %}">
-      {% csrf_token %}
-      <input type="hidden" name="next" value="{{ request.path }}">
-      <button type="submit" class="auth-btn">Sign out</button>
-    </form>
-  {% else %}
-    <!-- Logged out: show Sign in / Register modal trigger -->
-    <button type="button" class="auth-btn" id="open-auth-modal">
-      Sign in / Register
-    </button>
-  {% endif %}
-  </div>
-  {% endif %}
+        {% if request.user.is_authenticated or request.session.user_email %}
+          <form method="post" action="{% url 'auth_logout' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="auth-btn nav-auth-btn">Sign out</button>
+          </form>
+        {% else %}
+          <button type="button" class="auth-btn nav-auth-btn" id="open-auth-modal">
+            Sign in / Register
+          </button>
+        {% endif %}
+      </div>
     </nav>
+
 
     <!-- Header -->
     <header>

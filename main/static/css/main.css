@@ -142,19 +142,19 @@ a, h1 strong {
 /* Nav: Sign-out */
 
 .site-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .auth-container {
-    margin-left: auto; /* push the container to the right */
+  margin-left: auto;
 }
 
 .nav-auth-btn {
-    margin-left: 1rem;
-    padding: 6px 14px;
-    border-radius: 20px;
+  margin-left: 1rem;
+  padding: 6px 14px;
+  border-radius: 20px;
 }
 
 
