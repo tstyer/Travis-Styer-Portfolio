@@ -269,6 +269,94 @@ def auth_register(request):
 
 
 def auth_login(request):
+    # Detect AJAX (modal) vs normal HTML form
+    is_ajax = request.headers.get("x-requested-with") == "XMLHttpRequest"
+
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip().lower()
+        password = request.POST.get("password", "").strip()
+
+        if not email or not password:
+            if is_ajax:
+                return JsonResponse(
+                    {"success": False, "error": "Email and password are required."},
+                    status=400,
+                )
+            messages.error(request, "Email and password are required.")
+            return render(request, "auth_login.html", {"email": email})
+
+        try:
+            ws = get_users_sheet()
+            records = ws.get_all_records(expected_headers=USER_SHEET_HEADERS)
+        except Exception as e:
+            if is_ajax:
+                return JsonResponse(
+                    {"success": False, "error": f"Sheet error: {e}"},
+                    status=500,
+                )
+            messages.error(request, f"Sheet error: {e}")
+            return render(request, "auth_login.html", {"email": email})
+
+        matched = None
+        for row in records:
+            row_email = row.get("Email", "").strip().lower()
+
+            # Safe conversion (fixes the int/no-strip error)
+            raw_value = row.get(PASSWORD_HEADER, "")
+            row_pass = str(raw_value or "").strip()
+
+            if row_email == email and row_pass and check_password(password, row_pass):
+                matched = row
+                break
+
+        if not matched:
+            if is_ajax:
+                return JsonResponse(
+                    {"success": False, "error": "Invalid credentials."},
+                    status=401,
+                )
+            messages.error(request, "Invalid credentials.")
+            return render(request, "auth_login.html", {"email": email})
+
+        # Set session for either path
+        request.session["user_email"] = matched.get("Email")
+        username = matched.get("User Name") or matched.get("Username") or "Guest"
+        request.session["user_name"] = username
+
+        if is_ajax:
+            # Modal login: just tell JS it worked
+            return JsonResponse({"success": True, "username": username})
+
+        # Normal HTML login: redirect somewhere sensible
+        next_url = (
+            request.POST.get("next")
+            or request.GET.get("next")
+            or request.META.get("HTTP_REFERER")
+            or reverse("home")
+        )
+
+        # If next_url points at /project/<id>/comments/partial/,
+        # send them to the full project page instead of the bare fragment.
+        if next_url and "comments/partial" in next_url:
+            try:
+                path = next_url.split("?", 1)[0]
+                parts = path.strip("/").split("/")
+                idx = parts.index("project")
+                project_id = int(parts[idx + 1])
+                next_url = reverse("project", kwargs={"id": project_id})
+            except Exception:
+                next_url = reverse("home")
+
+        return redirect(next_url)
+
+    # GET
+    if is_ajax:
+        return JsonResponse(
+            {"success": False, "error": "GET not allowed."},
+            status=405,
+        )
+
+    return render(request, "auth_login.html")
     if request.method == "POST":
         email = request.POST.get("email", "").strip().lower()
         password = request.POST.get("password", "").strip()
