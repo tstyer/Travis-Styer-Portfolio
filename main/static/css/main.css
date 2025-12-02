@@ -108,6 +108,33 @@ a, h1 strong {
   color: var(--color-atags);
 }
 
+/* Auth button loading state */
+.auth-primary.is-loading {
+  position: relative;
+  color: transparent;          /* hide text while spinner shows */
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.auth-primary.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  border-top-color: transparent;
+  transform: translate(-50%, -50%);
+  animation: auth-spin 0.6s linear infinite;
+}
+
+@keyframes auth-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 /* desktop nav */
 .nav-menu {
   list-style: none;
