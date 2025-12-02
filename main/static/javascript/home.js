@@ -5,24 +5,25 @@ const tags = document.querySelectorAll(".tag");
 function toggleInfoParagraph() {
   const info = document.getElementById("temp-p");
   let visibleCount = 0;
+
   projects.forEach((p) => {
     if (p.style.display !== "none") {
       visibleCount++;
     }
   });
 
-  if (info) {
-    if (visibleCount > 0) {
-      info.classList.add("hidden");
-    } else {
-      info.classList.remove("hidden");
-    }
+  if (!info) return;
+
+  if (visibleCount > 0) {
+    info.classList.add("hidden");
+  } else {
+    info.classList.remove("hidden");
   }
 }
 
 function filterProjects(nameSearchEl, projectEls) {
   const nameQuery = (nameSearchEl?.value || "").toLowerCase();
-  let visibleProjects = [];
+  const visibleProjects = [];
 
   projectEls.forEach((project) => {
     const name = (project.getAttribute("data-name") || "").toLowerCase();
@@ -73,7 +74,7 @@ function clearActiveTags() {
 
 function filterByTag(tag) {
   const t = (tag || "").toLowerCase();
-  let visibleProjects = [];
+  const visibleProjects = [];
 
   projects.forEach((project) => {
     const projectTags = (project.getAttribute("data-tags") || "").toLowerCase();
@@ -136,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // NAV collapse
 const btn = document.querySelector(".nav-toggle");
 const menu = document.querySelector(".nav-menu");
+
 if (btn && menu) {
   btn.addEventListener("click", () => {
     menu.classList.toggle("is-open");
@@ -182,12 +184,13 @@ const closeBtn = document.querySelector(".comments-modal__close");
 if (closeBtn) {
   closeBtn.addEventListener("click", closeCommentsModal);
 }
+
 const commentsBackdrop = document.querySelector(".comments-modal__backdrop");
 if (commentsBackdrop) {
   commentsBackdrop.addEventListener("click", closeCommentsModal);
 }
 
-/* 
+/*
    AUTH MODAL
 */
 const authModal = document.getElementById("auth-modal");
@@ -199,7 +202,7 @@ const authTitle = authModal ? authModal.querySelector(".auth-title") : null;
 const authSub = authModal ? authModal.querySelector(".auth-sub") : null;
 const authModeInput = document.getElementById("auth-mode");
 
-// this is the badge that will show "Hi, User"
+// optional badge if you ever add it
 const userBadge = document.getElementById("user-badge");
 
 function setLoggedIn(username) {
@@ -250,9 +253,11 @@ function getCsrfTokenFromForm(formEl) {
 
 // submit handler (always)
 const authForm = document.getElementById("auth-form");
+
 if (authForm) {
   authForm.addEventListener("submit", (e) => {
     e.preventDefault();
+
     const formData = new FormData(authForm);
     const mode = formData.get("mode"); // "login" or "register"
     const csrfToken = getCsrfTokenFromForm(authForm);
@@ -260,6 +265,7 @@ if (authForm) {
     const headers = {
       "X-Requested-With": "XMLHttpRequest",
     };
+
     if (csrfToken) {
       headers["X-CSRFToken"] = csrfToken;
     }
@@ -272,16 +278,21 @@ if (authForm) {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-    window.location.reload();
+          // Close modal and force a full reload so Django can
+          // re-render the navbar with "Sign out"
+          closeAuth();
+          window.location.reload();
         } else {
           alert(data.error || "Could not complete request.");
         }
       })
-      .catch(() => alert("Network error"));
+      .catch(() => {
+        alert("Network error");
+      });
   });
 }
 
-// Export for test
+// Export for tests
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { filterProjects, hideAll, filterByTag };
 } else {
