@@ -3,7 +3,7 @@
     <h2>Comments for {{ project.title }}</h2>
   </header>
 
-  {# COMMENT FORM #}
+  {# COMMENT FORM (used for both create and update via JS) #}
   {% if form %}
     <form method="post"
           action="{% url 'comment_create' id=project.id %}"
@@ -44,8 +44,16 @@
                 {{ c.created_at|date:"Y-m-d H:i" }}
               </time>
 
-              {# Delete button: Django user who owns this comment #}
+              {# --- ACTIONS: EDIT + DELETE, only for owner --- #}
               {% if request.user.is_authenticated and c.user_id == request.user.id %}
+                {# Django-auth user owns this comment #}
+                <button type="button"
+                        class="comment-edit-btn"
+                        data-update-url="{% url 'comment_update' id=project.id comment_id=c.id %}"
+                        data-content="{{ c.content|escapejs }}">
+                  Edit
+                </button>
+
                 <form method="post"
                       action="{% url 'comment_delete' id=project.id comment_id=c.id %}"
                       class="comment-delete-form">
@@ -55,20 +63,28 @@
                   </button>
                 </form>
 
-              {# Delete button: sheet/session user who owns this comment #}
               {% elif not c.user_id and request.session.user_email %}
-                {% if c.author_name == request.session.user_name or c.author_name == request.session.author_name or c.author_name == request.session.user_email %}
+                {# Sheet/session-based owner #}
+                {% if c.author_name == request.session.user_name
+                      or c.author_name == request.session.author_name
+                      or c.author_name == request.session.user_email %}
+                  <button type="button"
+                          class="comment-edit-btn"
+                          data-update-url="{% url 'comment_update' id=project.id comment_id=c.id %}"
+                          data-content="{{ c.content|escapejs }}">
+                    Edit
+                  </button>
+
                   <form method="post"
-                  action="{% url 'comment_delete' id=project.id comment_id=c.id %}"
-                  class="comment-delete-form">
-                {% csrf_token %}
-                <button type="submit" class="comment-delete-btn">
-                Delete
-                </button>
+                        action="{% url 'comment_delete' id=project.id comment_id=c.id %}"
+                        class="comment-delete-form">
+                    {% csrf_token %}
+                    <button type="submit" class="comment-delete-btn">
+                      Delete
+                    </button>
                   </form>
                 {% endif %}
               {% endif %}
-
             </div>
           </header>
 

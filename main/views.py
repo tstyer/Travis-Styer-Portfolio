@@ -152,8 +152,93 @@ def project_comments_partial(request, id):
     return redirect(reverse("project", kwargs={"id": project_obj.pk}))
 
 
-@login_required
+@require_POST
 def comment_update(request, id, comment_id):
+    """
+    Update an existing comment.
+
+    - Django users: can edit comments where comment.user == request.user
+    - Sheet/session users: can edit comments where author_name matches their session
+    - AJAX: return updated partial; normal POST: redirect back to project
+    """
+    project_obj = get_object_or_404(Project, pk=id)
+    is_ajax = request.headers.get("x-requested-with") == "XMLHttpRequest"
+
+    is_django_user = request.user.is_authenticated
+    sheet_email = request.session.get("user_email")
+    sheet_name = request.session.get("user_name")
+    session_author = request.session.get("author_name")
+    has_sheet_identity = bool(sheet_email or sheet_name or session_author)
+
+    # Find the comment and check ownership
+    if is_django_user:
+        comment = get_object_or_404(
+            Comment,
+            pk=comment_id,
+            project=project_obj,
+            user=request.user,
+        )
+    elif has_sheet_identity:
+        identities = {v for v in [sheet_name, session_author, sheet_email] if v}
+
+        comment = get_object_or_404(
+            Comment,
+            pk=comment_id,
+            project=project_obj,
+            user__isnull=True,
+        )
+
+        if comment.author_name not in identities:
+            if is_ajax:
+                return HttpResponseForbidden("Not allowed.")
+            messages.error(request, "You cannot edit this comment.")
+            return redirect(reverse("project", kwargs={"id": project_obj.pk}))
+    else:
+        if is_ajax:
+            return HttpResponseForbidden("Not allowed.")
+        messages.error(request, "You must be signed in to edit comments.")
+        return redirect(reverse("project", kwargs={"id": project_obj.pk}))
+
+    # Apply form
+    form = CommentForm(request.POST, instance=comment)
+    if form.is_valid():
+        form.save()
+
+        if is_ajax:
+            comments = project_obj.comments.select_related("user").order_by(
+                "-created_at"
+            )
+            can_comment = is_django_user or has_sheet_identity
+            new_form = CommentForm() if can_comment else None
+
+            return render(
+                request,
+                "partials/project_comments.html",
+                {
+                    "project": project_obj,
+                    "comments": comments,
+                    "form": new_form,
+                },
+            )
+
+        messages.success(request, "Comment updated.")
+    else:
+        if is_ajax:
+            comments = project_obj.comments.select_related("user").order_by(
+                "-created_at"
+            )
+            return render(
+                request,
+                "partials/project_comments.html",
+                {
+                    "project": project_obj,
+                    "comments": comments,
+                    "form": form,
+                },
+            )
+        messages.error(request, "Please fix the errors and try again.")
+
+    return redirect(reverse("project", kwargs={"id": project_obj.pk}))
     """
     Update an existing comment (only by its owner).
     """

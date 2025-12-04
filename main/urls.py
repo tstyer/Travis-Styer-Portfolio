@@ -23,4 +23,15 @@ urlpatterns = [
 
     # NEW: Logout endpoint
     path("auth/logout/", views.auth_logout, name="auth_logout"),
+
+    path(
+        "project/<int:id>/comments/<int:comment_id>/delete/",
+        views.comment_delete,
+        name="comment_delete",
+    ),
+    path(
+        "project/<int:id>/comments/<int:comment_id>/update/",
+        views.comment_update,
+        name="comment_update",
+    ),
 ]

@@ -256,8 +256,15 @@ function getCsrfTokenFromForm(formEl) {
 function wireCommentsModal(rootEl) {
   if (!rootEl) return;
 
-  // Handle create / update of comments
   const commentForm = rootEl.querySelector(".comments-form");
+  const textarea =
+    commentForm &&
+    (commentForm.querySelector("textarea") ||
+      commentForm.querySelector("[name='content']"));
+  const submitBtn =
+    commentForm && commentForm.querySelector(".comments-btn-primary");
+
+  // Create / update submit
   if (commentForm) {
     commentForm.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -285,7 +292,7 @@ function wireCommentsModal(rootEl) {
     });
   }
 
-  // Handle delete
+  // Delete
   rootEl.querySelectorAll(".comment-delete-form").forEach((form) => {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -313,9 +320,31 @@ function wireCommentsModal(rootEl) {
         });
     });
   });
+
+  // 🔹 EDIT: fill form with an existing comment and point the form at update URL
+  rootEl.querySelectorAll(".comment-edit-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      if (!commentForm || !textarea) return;
+
+      const newContent = this.dataset.content || "";
+      const updateUrl = this.dataset.updateUrl;
+
+      textarea.value = newContent;
+
+      if (updateUrl) {
+        commentForm.setAttribute("action", updateUrl);
+      }
+
+      if (submitBtn) {
+        submitBtn.textContent = "Update comment";
+      }
+
+      textarea.focus();
+    });
+  });
 }
 
-// submit handler (always)
+// submit handler (always) – auth modal
 const authForm = document.getElementById("auth-form");
 if (authForm) {
   const submitBtn = authForm.querySelector(".auth-primary");
