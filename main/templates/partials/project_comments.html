@@ -46,11 +46,10 @@
 
               {# --- ACTIONS: EDIT + DELETE, only for owner --- #}
               {% if request.user.is_authenticated and c.user_id == request.user.id %}
-                {# Django-auth comment owner #}
                 <button type="button"
                         class="comment-edit-btn"
-                        data-update-url="{% url 'comment_update' id=project.id comment_id=c.id %}"
-                        data-content="{{ c.content|escapejs }}">
+                        data-content="{{ c.content|escapejs }}"
+                        data-update-url="{% url 'comment_update' id=project.id comment_id=c.id %}">
                   Edit
                 </button>
 
@@ -64,14 +63,13 @@
                 </form>
 
               {% elif not c.user_id and request.session.user_email %}
-                {# Sheet / session user – only owner can edit/delete #}
                 {% if c.author_name == request.session.user_name
                       or c.author_name == request.session.author_name
                       or c.author_name == request.session.user_email %}
                   <button type="button"
                           class="comment-edit-btn"
-                          data-update-url="{% url 'comment_update' id=project.id comment_id=c.id %}"
-                          data-content="{{ c.content|escapejs }}">
+                          data-content="{{ c.content|escapejs }}"
+                          data-update-url="{% url 'comment_update' id=project.id comment_id=c.id %}">
                     Edit
                   </button>
 
