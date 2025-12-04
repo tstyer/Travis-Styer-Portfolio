@@ -23,6 +23,15 @@
   </head>
 
   <body class="wrapper">
+    {% if messages %}
+  <div class="messages-wrapper">
+    {% for message in messages %}
+      <div class="message-banner {{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
     <!-- Nav -->
         <!-- NavBar -->
     <nav class="site-nav">

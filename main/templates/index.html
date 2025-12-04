@@ -22,6 +22,15 @@
   </head>
 
   <body class="wrapper">
+    {% if messages %}
+  <div class="messages-wrapper">
+    {% for message in messages %}
+      <div class="message-banner {{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
     <!-- NavBar -->
     <nav class="site-nav">
       <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
