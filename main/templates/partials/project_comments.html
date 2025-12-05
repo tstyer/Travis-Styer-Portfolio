@@ -43,10 +43,6 @@
               {{ c.created_at|date:"Y-m-d H:i" }}
             </time>
 
-            {# NOTE: for now, show Edit/Delete for everyone.
-               The view still enforces that only the owner can actually
-               update/delete the comment. #}
-
             <button type="button"
                     class="comment-edit-btn"
                     data-content="{{ c.content|escapejs }}"
