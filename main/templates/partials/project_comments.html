@@ -33,6 +33,7 @@
     {% if comments %}
       {% for c in comments %}
         <article class="comment-card">
+
           <header class="comment-card__meta">
             <span class="comment-card__author">
               {{ c.user.username|default:c.author_name|default:"Anon" }}
@@ -44,7 +45,9 @@
                 {{ c.created_at|date:"Y-m-d H:i" }}
               </time>
 
-              {# --- OWNER ACTIONS: DJANGO USER ONLY (for now) --- #}
+              {# ---------- OWNER ACTIONS ---------- #}
+
+              {# 1) Django-auth owner #}
               {% if request.user.is_authenticated and c.user_id == request.user.id %}
                 <button type="button"
                         class="comment-edit-btn"
@@ -62,16 +65,38 @@
                   </button>
                 </form>
               {% endif %}
+
+              {# 2) Sheet/session-auth owner #}
+              {% if not c.user_id and request.session.user_email %}
+                {% if c.author_name == request.session.user_name
+                      or c.author_name == request.session.author_name
+                      or c.author_name == request.session.user_email %}
+                  <button type="button"
+                          class="comment-edit-btn"
+                          data-content="{{ c.content|escapejs }}"
+                          data-update-url="{% url 'comment_update' id=project.id comment_id=c.id %}">
+                    Edit
+                  </button>
+
+                  <form method="post"
+                        action="{% url 'comment_delete' id=project.id comment_id=c.id %}"
+                        class="comment-delete-form">
+                    {% csrf_token %}
+                    <button type="submit" class="comment-delete-btn">
+                      Delete
+                    </button>
+                  </form>
+                {% endif %}
+              {% endif %}
             </div>
           </header>
 
-          <p class="comment-card__body">
-            {{ c.content }}
-          </p>
+          <p class="comment-card__body">{{ c.content }}</p>
+
         </article>
       {% endfor %}
     {% else %}
-      <p class="comments-empty">No comments yet. Be the first?</p>
+      <p class="comments-empty">No comments yet. Be the first!</p>
     {% endif %}
   </div>
 </div>
