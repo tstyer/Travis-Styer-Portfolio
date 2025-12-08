@@ -143,6 +143,29 @@ if (btn && menu) {
     menu.classList.toggle("is-open");
   });
 }
+// Toast messages
+  const banners = document.querySelectorAll('.message-banner');
+
+  banners.forEach((banner, index) => {
+    // Staggered show (in case there are multiple)
+    setTimeout(() => {
+      banner.classList.add('show');
+    }, 100 * index);
+
+    // Auto-hide after 4 seconds
+    setTimeout(() => {
+      banner.classList.remove('show');
+
+      // Remove from DOM after transition
+      setTimeout(() => {
+        if (banner.parentElement) {
+          banner.parentElement.removeChild(banner);
+        }
+      }, 300);
+    }, 4000 + 100 * index);
+  });
+});
+
 
 /*
    COMMENTS MODAL
