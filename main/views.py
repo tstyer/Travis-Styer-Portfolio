@@ -469,6 +469,8 @@ def auth_login(request):
             return JsonResponse({"success": True, "username": username})
 
         # Normal HTML login
+        messages.success(request, f"Signed in as {username}.")
+
         next_url = (
             request.POST.get("next")
             or request.GET.get("next")
