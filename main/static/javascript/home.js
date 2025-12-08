@@ -132,31 +132,27 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
-});
 
-// NAV collapse
-const btn = document.querySelector(".nav-toggle");
-const menu = document.querySelector(".nav-menu");
+  // NAV collapse
+  const btn = document.querySelector(".nav-toggle");
+  const menu = document.querySelector(".nav-menu");
 
-if (btn && menu) {
-  btn.addEventListener("click", () => {
-    menu.classList.toggle("is-open");
-  });
-}
-// Toast messages
-  const banners = document.querySelectorAll('.message-banner');
+  if (btn && menu) {
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("is-open");
+    });
+  }
+
+  // Toast messages
+  const banners = document.querySelectorAll(".message-banner");
 
   banners.forEach((banner, index) => {
-    // Staggered show (in case there are multiple)
     setTimeout(() => {
-      banner.classList.add('show');
+      banner.classList.add("show");
     }, 100 * index);
 
-    // Auto-hide after 4 seconds
     setTimeout(() => {
-      banner.classList.remove('show');
-
-      // Remove from DOM after transition
+      banner.classList.remove("show");
       setTimeout(() => {
         if (banner.parentElement) {
           banner.parentElement.removeChild(banner);
