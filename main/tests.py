@@ -127,3 +127,38 @@ class ViewTests(TestCase):  # Creating one test class for all.
         # redirect to login; if respond 403/400, change this
         self.assertIn(response.status_code, (302, 403, 400))
         self.assertEqual(Comment.objects.count(), 0)
+
+
+# Tests for users: edits, delete their comment:
+
+
+def test_edit_comment_as_owner(self):
+    self.client.login(username="tester", password="password123")
+    # create a comment owned by this user
+    comment = Comment.objects.create(
+        project=self.project,
+        user=self.User.objects.get(username="tester"),
+        content="orig",
+    )
+    url = reverse(
+        "comment_update", kwargs={"id": self.project.pk, "comment_id": comment.pk}
+    )
+    resp = self.client.post(url, {"content": "edited"})
+    self.assertEqual(resp.status_code, 302)
+    comment.refresh_from_db()
+    self.assertEqual(comment.content, "edited")
+
+
+def test_delete_comment_as_owner(self):
+    self.client.login(username="tester", password="password123")
+    comment = Comment.objects.create(
+        project=self.project,
+        user=self.User.objects.get(username="tester"),
+        content="will delete",
+    )
+    url = reverse(
+        "comment_delete", kwargs={"id": self.project.pk, "comment_id": comment.pk}
+    )
+    resp = self.client.post(url)
+    self.assertEqual(resp.status_code, 302)
+    self.assertFalse(Comment.objects.filter(pk=comment.pk).exists())
