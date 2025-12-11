@@ -850,14 +850,16 @@ main {
   }
 
   .tag-line {
-    max-width: 30rem;
-    margin: 0.35rem auto 0.75rem;
+    max-width: 34rem;
+    margin: 0.25rem auto 0.6rem;
   }
 
   .tag-line p {
-    font-size: 0.85rem;
-    line-height: 1.4;
+    font-size: 0.82rem;
+    line-height: 1.32;
     color: rgba(38, 42, 46, 0.75);
+    margin: 0 auto;
+    max-width: 48ch;
   }
 }
 
@@ -938,21 +940,25 @@ main {
 
 #project-info-github-link {
   display: inline-block;
-  padding: 0.6rem 1.5rem;
-  background: linear-gradient(135deg, #6C63FF, #5B55E0);
-  color: #fff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(47, 187, 170, 0.4);
+  background-color: transparent;
+  color: var(--color-text);
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-weight: 600;
+  transition: all 0.25s ease;
 }
 
 #project-info-github-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(107, 99, 255, 0.3);
+  background-color: rgba(47, 187, 170, 0.12);
+  box-shadow: 0 0 10px rgba(47, 187, 170, 0.35);
+  transform: scale(1.02);
 }
 
 #project-info-github-link:active {
-  transform: translateY(0);
+  background-color: rgba(47, 187, 170, 0.25);
+  color: #262A2E;
+  border-color: rgba(47, 187, 170, 0.7);
 }
 
