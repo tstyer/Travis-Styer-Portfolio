@@ -861,16 +861,6 @@ main {
   }
 }
 
-/* Subheader under site title */
-.subheader {
-  margin-top: 0.5rem;
-  font-size: 0.95rem;
-  color: rgba(38, 42, 46, 0.85);
-  max-width: 50rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 /* --- Project Info Modal --- */
 
 .project-info-modal {
