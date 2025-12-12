@@ -1,13 +1,8 @@
-{% extends "base.html" %}
-
-{% block title %}About Travis{% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% load static %} {% block title %}About Travis{%
+endblock %} {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}" />
 <link rel="stylesheet" href="{% static 'css/about.css' %}" />
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <header>
   <h1>Meet the Developer</h1>
 </header>
@@ -25,20 +20,26 @@
 
         <!-- MOBILE IMAGE (between paragraphs) -->
         <div class="about-illustration about-illustration--mobile">
-          <img src="{% static 'images/avataaars.png' %}" alt="Illustrated portrait of Travis">
+          <img
+            src="{% static 'images/avataaars.png' %}"
+            alt="Illustrated portrait of Travis"
+          />
         </div>
 
         <p>
-          I combine UX/UI thinking with clean, accessible code, mainly
-          working with HTML, CSS, JavaScript, and React. I enjoy projects
-          where I can collaborate closely with a team, understand goals,
-          and turn them into thoughtful digital experiences.
+          I combine UX/UI thinking with clean, accessible code, mainly working
+          with HTML, CSS, JavaScript, and React. I enjoy projects where I can
+          collaborate closely with a team, understand goals, and turn them into
+          thoughtful digital experiences.
         </p>
       </div>
 
       <!-- DESKTOP IMAGE (right side on larger screens) -->
       <div class="about-illustration about-illustration--desktop">
-        <img src="{% static 'images/avataaars.png' %}" alt="Illustrated portrait of Travis">
+        <img
+          src="{% static 'images/avataaars.png' %}"
+          alt="Illustrated portrait of Travis"
+        />
       </div>
     </div>
   </section>

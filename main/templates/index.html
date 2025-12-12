@@ -1,13 +1,8 @@
-{% extends "base.html" %}
-
-{% block title %}Travis Styer{% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% load static %} {% block title %}Travis Styer{%
+endblock %} {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}" />
 <link rel="stylesheet" href="{% static 'css/project.css' %}" />
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <!-- Header -->
 <header>
   <h2>FRONTEND DEVELOPER | WRITER</h2>
@@ -53,8 +48,11 @@
         >
       </h2>
       <p>{{ project.description }}</p>
-      <p>Tags: {% for tag in project.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-      <button class="comment-btn" type="button"> Comments</button>
+      <p>
+        Tags: {% for tag in project.tags.all %}{{ tag.name }}{% if not
+        forloop.last %}, {% endif %}{% endfor %}
+      </p>
+      <button class="comment-btn" type="button">Comments</button>
     </div>
     {% endfor %}
   </section>
@@ -63,9 +61,7 @@
     Select a tag or type in the search field to filter projects.
   </p>
 </main>
-{% endblock %}
-
-{% block extra_modals %}
+{% endblock %} {% block extra_modals %}
 <!-- Project Info modal -->
 <div id="project-info-modal" class="project-info-modal">
   <div class="project-info-modal__backdrop"></div>
@@ -78,9 +74,7 @@
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block inline_scripts %}
+{% endblock %} {% block inline_scripts %}
 <script>
   // Project info data - within the modal
   const projectsData = {
