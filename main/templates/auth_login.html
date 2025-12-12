@@ -1,149 +1,84 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign in to comment</title>
+{% extends "base.html" %} {% load static %} {% block title %}Sign in to
+comment{% endblock %} {% block extra_css %} {# Only include what this page needs
+(main.css is already in base.html) #}
+<link rel="stylesheet" href="{% static 'css/contact.css' %}" />
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+{% endblock %} {% block content %}
+<main class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow-lg">
+        <div class="card-body p-4">
+          <h1 class="h4 mb-3 text-center">Sign in to comment</h1>
+          <p class="text-muted text-center mb-4">
+            Use your comment account to sign in and leave feedback on projects.
+          </p>
 
-    <!-- Font Awesome (self-hosted) -->
-    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}" crossorigin>
-
-    <!-- Bootstrap (self-hosted) -->
-    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/contact.css' %}">
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{% static 'images/new_icon.png' %}">
-  </head>
-
-  <body class="wrapper">
-
-    <!-- NavBar -->
-    <nav class="site-nav">
-      <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
-
-      <ul class="nav justify-content-center nav-menu">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'contact' %}">Contact</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'about' %}">About Me</a>
-        </li>
-      </ul>
-
-      <div class="auth-container">
-        {% if request.user.is_authenticated or request.session.user_email %}
-          <form method="post" action="{% url 'auth_logout' %}">
+          <form method="post" novalidate>
             {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path }}">
-            <button type="submit" class="auth-btn nav-auth-btn">Sign out</button>
-          </form>
-        {% else %}
-          <button type="button" class="auth-btn nav-auth-btn" id="open-auth-modal">
-            Sign in / Register
-          </button>
-        {% endif %}
-      </div>
-    </nav>
 
-
-    <!-- MAIN CONTENT -->
-    <main class="container my-5">
-      <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6">
-          <div class="card shadow-lg">
-            <div class="card-body p-4">
-              <h1 class="h4 mb-3 text-center">Sign in to comment</h1>
-              <p class="text-muted text-center mb-4">
-                Use your comment account to sign in and leave feedback on projects.
-              </p>
-
-              {% if messages %}
-                <div class="mb-3">
-                  {% for message in messages %}
-                    <div class="alert alert-{{ message.tags|default:'info' }} mb-2 auto-dismiss">
-                      {{ message }}
-                    </div>
-                  {% endfor %}
-                </div>
-              {% endif %}
-
-              <form method="post" novalidate>
-                {% csrf_token %}
-
-                <div class="mb-3">
-                  <label for="id_email" class="form-label">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="id_email"
-                    class="form-control"
-                    required
-                    value="{{ email|default:'' }}"
-                    placeholder="you@example.com"
-                  >
-                </div>
-
-                <div class="mb-3">
-                  <label for="id_password" class="form-label">Password</label>
-                  <input
-                    type="password"
-                    name="password"
-                    id="id_password"
-                    class="form-control"
-                    required
-                    placeholder="Your password"
-                  >
-                </div>
-
-                <!-- Redirect back to the page the user came from -->
-                <input type="hidden" name="next"
-                       value="{{ request.GET.next|default:request.META.HTTP_REFERER }}">
-
-                <div class="d-grid">
-                  <button type="submit" class="tag">
-                    Sign in
-                  </button>
-                </div>
-              </form>
-
-              <p class="mt-3 mb-0 text-center small text-muted">
-                Changed your mind? <a href="{% url 'home' %}">Go back to projects</a>.
-              </p>
+            <div class="mb-3">
+              <label for="id_email" class="form-label">Email</label>
+              <input
+                type="email"
+                name="email"
+                id="id_email"
+                class="form-control"
+                required
+                value="{{ email|default:'' }}"
+                placeholder="you@example.com"
+              />
             </div>
-          </div>
+
+            <div class="mb-3">
+              <label for="id_password" class="form-label">Password</label>
+              <input
+                type="password"
+                name="password"
+                id="id_password"
+                class="form-control"
+                required
+                placeholder="Your password"
+              />
+            </div>
+
+            {# Redirect back to where user came from, fallback to home #}
+            <input
+              type="hidden"
+              name="next"
+              value="{{ request.GET.next|default:request.META.HTTP_REFERER|default_if_none:'' }}"
+            />
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Sign in</button>
+            </div>
+          </form>
+
+          <p class="mt-3 mb-0 text-center small text-muted">
+            Changed your mind?
+            <a href="{% url 'home' %}">Go back to projects</a>.
+          </p>
         </div>
       </div>
-    </main>
+    </div>
+  </div>
+</main>
+{% endblock %} {% block inline_scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const alerts = document.querySelectorAll(".auto-dismiss");
+    alerts.forEach((alert) => {
+      if (!alert.classList.contains("alert-success")) return;
 
-    <!-- Bootstrap JS (self-hosted) -->
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const alerts = document.querySelectorAll('.auto-dismiss');
-        alerts.forEach(alert => {
-          // Only auto-dismiss success alerts (don't hide errors)
-          if (!alert.classList.contains('alert-success')) return;
-
-          // gently fade out after 5 seconds
-          setTimeout(() => {
-            alert.style.transition = 'opacity 0.5s ease, max-height 0.5s ease';
-            alert.style.opacity = '0';
-            alert.style.maxHeight = '0';
-            setTimeout(() => {
-              if (alert.parentNode) alert.parentNode.removeChild(alert);
-            }, 500);
-          }, 5000);
-        });
-      });
-    </script>
-  </body>
-</html>
+      setTimeout(() => {
+        alert.style.transition = "opacity 0.5s ease, max-height 0.5s ease";
+        alert.style.opacity = "0";
+        alert.style.maxHeight = "0";
+        setTimeout(() => {
+          if (alert.parentNode) alert.parentNode.removeChild(alert);
+        }, 500);
+      }, 5000);
+    });
+  });
+</script>
+{% endblock %}
