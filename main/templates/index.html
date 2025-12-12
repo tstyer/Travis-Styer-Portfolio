@@ -36,7 +36,7 @@ endblock %} {% block extra_css %}
     <div
       class="project-card"
       data-name="{{ project.title|lower|escape }}"
-      data-tags="{% for tag in project.tags.all %}{{ tag.name|lower|escape }}{% if not forloop.last %},{% endif %}{% endfor %}"
+      data-tags="{% for tag in project.tags.all %}{{ tag.name|lower|escape }} {% endfor %}"
       data-project-id="{{ project.id }}"
     >
       <h2>
