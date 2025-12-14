@@ -1,3 +1,5 @@
+import logging
+
 import gspread
 from django.conf import settings
 from django.contrib import messages
@@ -7,11 +9,12 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from .forms import CommentForm, ContactForm
 from .models import Comment, Project, Tag
+
+logger = logging.getLogger(__name__)
 
 # Google Sheet header constants
 USER_SHEET_HEADERS = ["User Name", "Email", "Date Joined", "Password (Now Hashed)"]
@@ -34,7 +37,6 @@ def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            # You could email / store the message here if you wanted.
             messages.success(request, "Message sent successfully.")
             return redirect("contact")
         messages.error(request, "Please correct the errors below.")
@@ -53,7 +55,6 @@ def project(request, id):
     Full project detail page.
     """
     project_obj = get_object_or_404(Project, pk=id)
-
     comments = project_obj.comments.select_related("user").order_by("-created_at")
 
     # allow either Django-auth or sheet-auth to post
@@ -136,6 +137,7 @@ def comment_create(request, id):
         else:
             # comments coming from sheet/session auth
             comment.author_name = sheet_name or session_author_name or sheet_email
+            comment.author_email = sheet_email or ""
 
         comment.save()
 
@@ -182,7 +184,7 @@ def comment_update(request, id, comment_id):
     Update an existing comment.
 
     - Django users: can edit comments where comment.user == request.user
-    - Sheet/session users: can edit comments where author_name matches their session
+    - Sheet/session users: can edit comments where author_name OR author_email matches their session
     - AJAX: return updated partial; normal POST: redirect back to project
     """
     project_obj = get_object_or_404(Project, pk=id)
@@ -210,7 +212,12 @@ def comment_update(request, id, comment_id):
             project=project_obj,
             user__isnull=True,
         )
-        if comment.author_name not in identities:
+
+        is_owner = (comment.author_name and comment.author_name in identities) or (
+            comment.author_email and comment.author_email in identities
+        )
+
+        if not is_owner:
             if is_ajax:
                 return HttpResponseForbidden("Not allowed.")
             messages.error(request, "You cannot edit this comment.")
@@ -268,7 +275,7 @@ def comment_delete(request, id, comment_id):
     Delete a comment.
 
     - Django users: can delete comments where comment.user == request.user
-    - Sheet/session users: can delete comments where author_name matches their session
+    - Sheet/session users: can delete comments where author_name OR author_email matches their session
     - AJAX: return updated partial; normal POST: redirect back to project
     """
     project_obj = get_object_or_404(Project, pk=id)
@@ -280,7 +287,6 @@ def comment_delete(request, id, comment_id):
     session_author = request.session.get("author_name")
     has_sheet_identity = bool(sheet_email or sheet_name or session_author)
 
-    # figure out which comment is allowed to be deleted
     if is_django_user:
         comment = get_object_or_404(
             Comment,
@@ -289,14 +295,19 @@ def comment_delete(request, id, comment_id):
             user=request.user,
         )
     elif has_sheet_identity:
+        identities = {v for v in [sheet_name, session_author, sheet_email] if v}
         comment = get_object_or_404(
             Comment,
             pk=comment_id,
             project=project_obj,
             user__isnull=True,
         )
-        identities = {v for v in [sheet_name, session_author, sheet_email] if v}
-        if comment.author_name not in identities:
+
+        is_owner = (comment.author_name and comment.author_name in identities) or (
+            comment.author_email and comment.author_email in identities
+        )
+
+        if not is_owner:
             if is_ajax:
                 return HttpResponseForbidden("Not allowed.")
             messages.error(request, "You cannot delete this comment.")
@@ -307,7 +318,6 @@ def comment_delete(request, id, comment_id):
         messages.error(request, "You must be signed in to delete comments.")
         return redirect(reverse("project", kwargs={"id": project_obj.pk}))
 
-    # delete
     comment.delete()
 
     if not is_ajax:
@@ -348,18 +358,15 @@ def get_users_sheet():
     return ws
 
 
-@csrf_exempt
 @require_POST
 def auth_register(request):
     email = request.POST.get("email", "").strip().lower()
     password = request.POST.get("password", "").strip()
     username = request.POST.get("username", "").strip()
 
-    # only email + password are truly required
     if not email or not password:
         return JsonResponse(
-            {"success": False, "error": "All fields required."},
-            status=400,
+            {"success": False, "error": "All fields required."}, status=400
         )
 
     if not username:
@@ -367,30 +374,24 @@ def auth_register(request):
 
     try:
         ws = get_users_sheet()
-    except Exception as e:
-        return JsonResponse(
-            {"success": False, "error": f"Sheet error: {e}"},
-            status=500,
-        )
-
-    try:
         records = ws.get_all_records(expected_headers=USER_SHEET_HEADERS)
-    except Exception as e:
+    except Exception:
+        logger.exception("auth_register: sheet read failure")
         return JsonResponse(
-            {"success": False, "error": f"Read error: {e}"},
-            status=500,
+            {
+                "success": False,
+                "error": "Registration is temporarily unavailable. Please try again later.",
+            },
+            status=503,
         )
 
-    # check for duplicate email
     for row in records:
         if row.get("Email", "").strip().lower() == email:
             return JsonResponse(
-                {"success": False, "error": "Email already registered."},
-                status=400,
+                {"success": False, "error": "Email already registered."}, status=400
             )
 
     hashed_password = make_password(password)
-
     now = timezone.localtime(timezone.now())
     now_str = now.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -398,10 +399,11 @@ def auth_register(request):
 
     try:
         ws.append_row(new_row)
-    except Exception as e:
+    except Exception:
+        logger.exception("auth_register: sheet write failure")
         return JsonResponse(
-            {"success": False, "error": f"Write error: {e}"},
-            status=500,
+            {"success": False, "error": "Registration failed. Please try again later."},
+            status=503,
         )
 
     request.session["user_email"] = email
@@ -432,13 +434,14 @@ def auth_login(request):
         try:
             ws = get_users_sheet()
             records = ws.get_all_records(expected_headers=USER_SHEET_HEADERS)
-        except Exception as e:
+        except Exception:
+            logger.exception("auth_login: sheet read failure")
             if is_ajax:
                 return JsonResponse(
-                    {"success": False, "error": f"Sheet error: {e}"},
-                    status=500,
+                    {"success": False, "error": "Login is temporarily unavailable."},
+                    status=503,
                 )
-            messages.error(request, f"Sheet error: {e}")
+            messages.error(request, "Login is temporarily unavailable.")
             return render(request, "auth_login.html", {"email": email})
 
         matched = None
@@ -454,23 +457,19 @@ def auth_login(request):
         if not matched:
             if is_ajax:
                 return JsonResponse(
-                    {"success": False, "error": "Invalid credentials."},
-                    status=401,
+                    {"success": False, "error": "Invalid credentials."}, status=401
                 )
             messages.error(request, "Invalid credentials.")
             return render(request, "auth_login.html", {"email": email})
 
-        # Set session
         request.session["user_email"] = matched.get("Email")
         username = matched.get("User Name") or matched.get("Username") or "Guest"
         request.session["user_name"] = username
 
         if is_ajax:
-            # Ensure a normal page reload shows a success banner for AJAX logins
             messages.success(request, f"Signed in as {username}.")
             return JsonResponse({"success": True, "username": username})
 
-        # Normal HTML login
         messages.success(request, f"Signed in as {username}.")
 
         next_url = (
@@ -480,7 +479,6 @@ def auth_login(request):
             or reverse("home")
         )
 
-        # Avoid redirecting user to a partial-only URL
         if next_url and "comments/partial" in next_url:
             try:
                 path = next_url.split("?", 1)[0]
@@ -493,12 +491,8 @@ def auth_login(request):
 
         return redirect(next_url)
 
-    # GET
     if is_ajax:
-        return JsonResponse(
-            {"success": False, "error": "GET not allowed."},
-            status=405,
-        )
+        return JsonResponse({"success": False, "error": "GET not allowed."}, status=405)
 
     return render(request, "auth_login.html")
 

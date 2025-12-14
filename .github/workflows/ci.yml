@@ -12,8 +12,9 @@ jobs:
     env:
       SECRET_KEY: "ci-not-a-secret"
       DEBUG: "0"
-      # Prevent settings import errors if referenced
       GOOGLE_SHEET_ID: "ci-placeholder"
+      # If your settings fall back to reading creds.json locally, stop CI failing:
+      GOOGLE_SERVICE_ACCOUNT_JSON: "{}"
 
     steps:
       - name: Checkout
@@ -28,6 +29,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Lint (ruff)
+        run: |
+          ruff check .
 
       - name: Django check
         run: |
