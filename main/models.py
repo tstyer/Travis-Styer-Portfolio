@@ -2,13 +2,10 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-# Create your models here.
-
 
 class Tag(models.Model):
-    name = models.CharField(
-        max_length=100, unique=True
-    )  # So there cannot be duplicate names.
+    # Indexed + unique helps lookups like Tag.objects.get(name=...)
+    name = models.CharField(max_length=100, unique=True, db_index=True)
 
     def __str__(self):
         return self.name
@@ -17,21 +14,14 @@ class Tag(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    tags = models.ManyToManyField(
-        Tag, related_name="projects"
-    )  # Many-to-many because many projects can have many tags.
-    link = models.URLField(
-        max_length=200, blank=True
-    )  # Blank = True (Ok if no link for project).
+    tags = models.ManyToManyField(Tag, related_name="projects")
+    link = models.URLField(max_length=200, blank=True)
 
     def __str__(self):
         return self.title
 
 
-# Because there's multiple images per project, there's a separate model for the images.
-# There can be multiple images per project — use ForeignKey (many-to-one).
 class ProjectImage(models.Model):
-    # If the project is deleted, then this cascades to delete the image.
     project = models.ForeignKey(
         Project, related_name="images", on_delete=models.CASCADE
     )
@@ -39,9 +29,6 @@ class ProjectImage(models.Model):
 
     def __str__(self):
         return f"{self.project.title} Image"
-
-
-# Added models to satisfy CRUD for comments
 
 
 class Profile(models.Model):
@@ -52,30 +39,22 @@ class Profile(models.Model):
     """
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    display_name = models.CharField(max_length=120, blank=True)  # Optional public name
-    joined_at = models.DateTimeField(default=timezone.now)  # Date user/profile created
+    display_name = models.CharField(max_length=120, blank=True)
+    joined_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        # Prefer a friendly name if set, else fall back to the username
         return self.display_name or self.user.get_username()
 
 
 class Comment(models.Model):
     """
     User comments on a Project.
-        - ForeignKey to Project (what the comment is about)
-        - ForeignKey to User (who wrote it). Kept, but made optional so
-            session/sheet users can also comment.
-        - Content text field for the comment body.
-        - created_at / updated_at for audit & edit history.
     """
 
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="comments"
     )
 
-    # Made nullable/blank so comments coming from the Google Sheet
-    # session can be stored.
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -84,19 +63,22 @@ class Comment(models.Model):
         blank=True,
     )
 
-    # For comments created by session/sheet users (not in Django's auth).
-    # Stores a display name pulled from Google Sheets or the session.
     author_name = models.CharField(max_length=120, blank=True)
+    content = models.TextField()
 
-    content = models.TextField()  # "Give me suggestions or leave feedback!"
-    created_at = models.DateTimeField(default=timezone.now)  # Date Posted
-    updated_at = models.DateTimeField(auto_now=True)  # Date Updated (auto on save)
+    # ✅ Index for ordering/filtering at scale
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-created_at"]  # Newest first
+        ordering = ["-created_at"]
+        # ✅ Helpful when you frequently query "comments for a project, newest first"
+        indexes = [
+            models.Index(fields=["project", "-created_at"]),
+        ]
 
     def __str__(self):
-        # Show either the Django user or the sheet/session name
         who = self.user if self.user else (self.author_name or "Anon")
         return f"Comment by {who} on {self.project}"
 
