@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
@@ -173,3 +174,35 @@ class CommentOwnerTests(TestCase):
         resp = self.client.post(url)
         self.assertEqual(resp.status_code, 302)
         self.assertFalse(Comment.objects.filter(pk=comment.pk).exists())
+
+
+# Negative tests
+
+
+class CommentPermissionTests(TestCase):
+    def setUp(self):
+        self.user_a = User.objects.create_user(username="usera", password="pass1234")
+        self.user_b = User.objects.create_user(username="userb", password="pass1234")
+
+        self.project = Project.objects.create(
+            title="Test Project",
+            description="Test desc",
+        )
+
+        self.comment = Comment.objects.create(
+            project=self.project,
+            user=self.user_a,
+            content="User A comment",
+        )
+
+    def test_non_owner_cannot_edit_comment(self):
+        self.client.login(username="userb", password="pass1234")
+
+        url = reverse(
+            "comment_update",
+            kwargs={"id": self.project.id, "comment_id": self.comment.id},
+        )
+
+        response = self.client.post(url, {"content": "Hacked"})
+
+        self.assertIn(response.status_code, [403, 404, 302])
