@@ -29,37 +29,43 @@ Travis Styer
   <section class="filters">
     <input type="text" id="name-search" placeholder="Search by project" />
     <div class="tags-list">
-      <button class="tag" data-tag="javascript">JavaScript</button>
-      <button class="tag" data-tag="react.js">React.JS</button>
-      <button class="tag" data-tag="css">CSS</button>
+      {% for tag in tags %}
+        <button class="tag" data-tag="{{ tag.name|lower|escape }}">{{ tag.name }}</button>
+      {% empty %}
+        <p class="small">No tags yet.</p>
+      {% endfor %}
     </div>
   </section>
 
   <section class="projects-list">
     {% for project in projects %}
-    <div
-      class="project-card"
-      data-name="{{ project.title|lower|escape }}"
-      data-tags="{% for tag in project.tags.all %}{{ tag.name|lower|escape }} {% endfor %}"
-      data-project-id="{{ project.id }}"
-    >
-      <h2>
-        <a
-          href="javascript:void(0)"
-          class="project-info-link"
-          data-project-id="{{ project.id }}"
-          >{{ project.title }}</a
-        >
-      </h2>
+      <div
+        class="project-card"
+        data-name="{{ project.title|lower|escape }}"
+        data-tags="{% for tag in project.tags.all %}{{ tag.name|lower|escape }} {% endfor %}"
+        data-project-id="{{ project.id }}"
+      >
+        <h2>
+          <a
+            href="javascript:void(0)"
+            class="project-info-link"
+            data-project-id="{{ project.id }}"
+          >{{ project.title }}</a>
+        </h2>
 
-      <p>{{ project.description }}</p>
+        <p>{{ project.description }}</p>
 
-      <p>
-        Tags: {% for tag in project.tags.all %} {{ tag.name }}, {% endfor %}
-      </p>
+        <p>
+          Tags:
+          {% for tag in project.tags.all %}
+            {{ tag.name }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
 
-      <button class="comment-btn" type="button">Comments</button>
-    </div>
+        <button class="comment-btn" type="button">Comments</button>
+      </div>
+    {% empty %}
+      <p>No projects found.</p>
     {% endfor %}
   </section>
 
@@ -67,7 +73,9 @@ Travis Styer
     Select a tag or type in the search field to filter projects.
   </p>
 </main>
-{% endblock %} {% block extra_modals %}
+{% endblock %}
+
+{% block extra_modals %}
 <div id="project-info-modal" class="project-info-modal">
   <div class="project-info-modal__backdrop"></div>
   <div class="project-info-modal__content">
@@ -75,45 +83,47 @@ Travis Styer
     <div id="project-info-modal-body">
       <h2 id="project-info-title"></h2>
       <p id="project-info-description"></p>
-      <a id="project-info-github" href="#" target="_blank">View on GitHub</a>
+      <a id="project-info-github" href="#" target="_blank" rel="noopener">View on GitHub</a>
     </div>
   </div>
 </div>
-{% endblock %} {% block inline_scripts %}
+{% endblock %}
+
+{% block inline_scripts %}
 <script>
+  // DB-backed project data (no more hardcoded IDs)
   const projectsData = {
-    1: {
-      title: "Destination Mars",
-      description:
-        "A falling-platform JavaScript game featuring auto-jump mechanics and timers. Navigate your character to avoid obstacles and reach the destination. Built with vanilla JavaScript and tested thoroughly.",
-      github: "https://github.com/tstyer/Basic-Game-Destination-Mars",
-    },
-    2: {
-      title: "Portfolio Website",
-      description:
-        "This portfolio website! A Django-based project showcasing my web development work. Features include dynamic project filtering, a comments system, and a contact form. Built with Django, Bootstrap, and vanilla JavaScript.",
-      github: "https://github.com/tstyer/portfolio-website",
-    },
+    {% for project in projects %}
+      "{{ project.id }}": {
+        title: "{{ project.title|escapejs }}",
+        description: "{{ project.description|escapejs }}",
+        github: "{% if project.github_url %}{{ project.github_url|escapejs }}{% elif project.link %}{{ project.link|escapejs }}{% else %}{% endif %}"
+      }{% if not forloop.last %},{% endif %}
+    {% endfor %}
   };
 
   const projectInfoModal = document.getElementById("project-info-modal");
-  const projectInfoBackdrop = document.querySelector(
-    ".project-info-modal__backdrop"
-  );
-  const projectInfoCloseBtn = document.querySelector(
-    ".project-info-modal__close"
-  );
+  const projectInfoBackdrop = document.querySelector(".project-info-modal__backdrop");
+  const projectInfoCloseBtn = document.querySelector(".project-info-modal__close");
   const projectInfoLinks = document.querySelectorAll(".project-info-link");
 
   function openProjectInfoModal(projectId) {
     const project = projectsData[projectId];
-    if (project) {
-      document.getElementById("project-info-title").textContent = project.title;
-      document.getElementById("project-info-description").textContent =
-        project.description;
-      document.getElementById("project-info-github").href = project.github;
-      projectInfoModal.style.display = "flex";
+    if (!project) return;
+
+    document.getElementById("project-info-title").textContent = project.title;
+    document.getElementById("project-info-description").textContent = project.description;
+
+    const githubLink = document.getElementById("project-info-github");
+    if (project.github && project.github.trim() !== "") {
+      githubLink.href = project.github;
+      githubLink.style.display = "";
+    } else {
+      githubLink.href = "#";
+      githubLink.style.display = "none";
     }
+
+    projectInfoModal.style.display = "flex";
   }
 
   function closeProjectInfoModal() {

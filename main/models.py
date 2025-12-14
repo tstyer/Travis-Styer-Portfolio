@@ -4,7 +4,6 @@ from django.utils import timezone
 
 
 class Tag(models.Model):
-    # Indexed + unique helps lookups like Tag.objects.get(name=...)
     name = models.CharField(max_length=100, unique=True, db_index=True)
 
     def __str__(self):
@@ -15,7 +14,12 @@ class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     tags = models.ManyToManyField(Tag, related_name="projects")
+
+    # Optional live/demo link (or general link)
     link = models.URLField(max_length=200, blank=True)
+
+    # NEW: Optional GitHub repo link for your modal CTA
+    github_url = models.URLField(max_length=300, blank=True)
 
     def __str__(self):
         return self.title
@@ -32,12 +36,6 @@ class ProjectImage(models.Model):
 
 
 class Profile(models.Model):
-    """
-    Simple viewer profile tied to Django's auth User.
-    - Gives a place to store display info for commenters.
-    - A Profile can be auto-created on user signup via a post_save signal (optional).
-    """
-
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=120, blank=True)
     joined_at = models.DateTimeField(default=timezone.now)
@@ -47,10 +45,6 @@ class Profile(models.Model):
 
 
 class Comment(models.Model):
-    """
-    User comments on a Project.
-    """
-
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="comments"
     )
@@ -64,16 +58,17 @@ class Comment(models.Model):
     )
 
     author_name = models.CharField(max_length=120, blank=True)
+
+    # NEW: more reliable ownership match for session/sheet users
+    author_email = models.EmailField(blank=True)
+
     content = models.TextField()
 
-    # ✅ Index for ordering/filtering at scale
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
-
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-created_at"]
-        # ✅ Helpful when you frequently query "comments for a project, newest first"
         indexes = [
             models.Index(fields=["project", "-created_at"]),
         ]
