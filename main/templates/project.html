@@ -139,54 +139,9 @@
       </article>
 
       <!-- COMMENTS -->
-      <section class="comments mt-5">
-        <h2 class="mb-3">Comments</h2>
-
-        {# CREATE NEW COMMENT (simple non-AJAX form) #} {% if form %}
-        <form
-          method="post"
-          action="{% url 'comment_create' id=project.id %}"
-          class="comment-form mb-4"
-        >
-          {% csrf_token %} {{ form.non_field_errors }}
-          <div class="form-group mb-3">
-            {{ form.content.errors }} {{ form.content }}
-          </div>
-          <button type="submit" class="btn btn-primary">Post Comment</button>
-        </form>
-        {% else %}
-        <p class="text-muted mb-4">
-          Sign in to leave a comment.
-          <a href="{% url 'home' %}">Go to Home</a>
-        </p>
-        {% endif %}
-
-        <!-- List comments -->
-        <ul class="comment-list list-unstyled">
-          {% for c in comments %}
-          <li class="comment-item border rounded p-3 mb-3">
-            <div
-              class="comment-header d-flex justify-content-between align-items-center mb-2"
-            >
-              <strong>
-                {{ c.user.username|default:c.author_name|default:"Anon" }}
-              </strong>
-              <time
-                class="comment-date text-muted"
-                datetime="{{ c.created_at|date:'c' }}"
-              >
-                {{ c.created_at|date:"Y-m-d H:i" }}
-              </time>
-            </div>
-
-            <p class="comment-content mb-3">{{ c.content }}</p>
-            {# (owner controls temporarily removed for test debugging) #}
-          </li>
-          {% empty %}
-          <li class="text-muted">No comments yet. Be the first!</li>
-          {% endfor %}
-        </ul>
-      </section>
+<section class="comments mt-5">
+  {% include "partials/project_comments.html" %}
+</section>
     </main>
 
     <footer>
