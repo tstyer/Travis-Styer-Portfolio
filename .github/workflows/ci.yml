@@ -10,8 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SECRET_KEY: "ci-not-a-secret"
+      SECRET_KEY: "ci-not-secret"
       DEBUG: "False"
+      ENABLE_SECURITY_HEADERS: "True"
+      SECURE_HSTS_SECONDS: "3600"
+      DATABASE_URL: "sqlite:///db.sqlite3"
       GOOGLE_SHEET_ID: "ci-placeholder"
       # Prevent CI failures if settings expect a JSON creds env var
       GOOGLE_SERVICE_ACCOUNT_JSON: "{}"
@@ -39,9 +42,6 @@ jobs:
           python manage.py check
 
       - name: Django deploy settings check
-        env:
-          SECRET_KEY: "ci-placeholder-secret-key"
-          DEBUG: "False"
         run: |
           python manage.py check --deploy --fail-level WARNING
 
