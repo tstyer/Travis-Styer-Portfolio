@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import logout as django_logout
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.cache import cache
-from django.http import HttpResponseForbidden, HttpResponseTooManyRequests, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -439,7 +439,7 @@ def auth_login(request):
                 },
                 status=429,
             )
-        return HttpResponseTooManyRequests("Too many login attempts. Try again later.")
+        return HttpResponse("Too many login attempts. Try again later.", status=429)
 
     if request.method == "POST":
         email = request.POST.get("email", "").strip().lower()
