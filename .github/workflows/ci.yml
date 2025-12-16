@@ -11,9 +11,9 @@ jobs:
 
     env:
       SECRET_KEY: "ci-not-a-secret"
-      DEBUG: "0"
+      DEBUG: "False"
       GOOGLE_SHEET_ID: "ci-placeholder"
-      # If your settings fall back to reading creds.json locally, stop CI failing:
+      # Prevent CI failures if settings expect a JSON creds env var
       GOOGLE_SERVICE_ACCOUNT_JSON: "{}"
 
     steps:
@@ -34,9 +34,16 @@ jobs:
         run: |
           ruff check .
 
-      - name: Django check
+      - name: Django system check
         run: |
           python manage.py check
+
+      - name: Django deploy settings check
+        env:
+          SECRET_KEY: "ci-placeholder-secret-key"
+          DEBUG: "False"
+        run: |
+          python manage.py check --deploy --fail-level WARNING
 
       - name: Run tests
         run: |
