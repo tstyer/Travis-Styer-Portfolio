@@ -1,17 +1,33 @@
 /* Typography (Google fonts loaded in <head>) */
-:root{
+:root {
   --font-header: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   --color-bg: #F6FAFF;
   --color-text: #333333;
-  --color-accent: #6C63FF; /* colour accent */
-  --color-atags: #4EE0CB;  /* Link colours */
+  --color-accent: #6C63FF;
+  /* colour accent */
+  --color-atags: #4EE0CB;
+  /* Link colours */
   --color-lightblue: #A4C8F0;
   --color-shadow: #C8E8F8;
   --base-font-size: 1rem;
   --H2H3P-Colour: #2FBBAA;
   --H1-Colour: #5B55E0;
   --color-text: #262A2E;
+}
+
+/* H3 */
+
+header h3 {
+  font-size: 1.1rem;
+  /* slightly smaller than default */
+  font-weight: 500;
+  color: var(--color-accent);
+  margin-top: 0.75rem;
+  /* same spacing as name to h3 */
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+  font-weight: 400;
 }
 
 /* Filters section */
@@ -46,9 +62,9 @@
 }
 
 .filters .tag:hover {
-  background-color: var(--H2H3P-Colour);  
+  background-color: var(--H2H3P-Colour);
   box-shadow: 0 0 10px rgba(47, 187, 170, 0.6);
-  transform: scale(1.02); 
+  transform: scale(1.02);
 }
 
 

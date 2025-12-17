@@ -79,18 +79,6 @@ h2 {
   color: #249988;
 }
 
-header h3 {
-  font-size: 1.1rem;
-  /* slightly smaller than default */
-  font-weight: 500;
-  color: var(--color-accent);
-  margin-top: 0.75rem;
-  /* same spacing as name to h3 */
-  margin-bottom: 0.75rem;
-  letter-spacing: 0.02em;
-  font-weight: 400;
-}
-
 /* Called by JS */
 
 .hidden {
