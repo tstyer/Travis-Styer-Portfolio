@@ -162,7 +162,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 /*
    COMMENTS MODAL
 */
@@ -174,7 +173,9 @@ function openCommentsModal(projectId) {
   modal.classList.add("is-open");
   modalBody.innerHTML = "<p>Loading comments…</p>";
 
-  fetch(`/project/${projectId}/comments/partial/`)
+  fetch(`/project/${projectId}/comments/partial/`, {
+    credentials: "same-origin",
+  })
     .then((res) => res.text())
     .then((html) => {
       modalBody.innerHTML = html;
@@ -299,6 +300,7 @@ function wireCommentsModal(rootEl) {
         method: "POST",
         body: formData,
         headers: headers,
+        credentials: "same-origin",
       })
         .then((res) => res.text())
         .then((html) => {
@@ -328,6 +330,7 @@ function wireCommentsModal(rootEl) {
         method: "POST",
         body: formData,
         headers: headers,
+        credentials: "same-origin",
       })
         .then((res) => res.text())
         .then((html) => {
@@ -394,6 +397,7 @@ if (authForm) {
       method: "POST",
       body: formData,
       headers: headers,
+      credentials: "same-origin",
     })
       .then((res) => res.json())
       .then((data) => {
