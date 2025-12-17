@@ -1,7 +1,3 @@
-.home-hero h3 {
-  border: 3px solid red;
-}
-
 /* Typography (Google fonts loaded in <head>) */
 :root {
   --font-header: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
