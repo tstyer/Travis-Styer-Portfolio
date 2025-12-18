@@ -42,8 +42,7 @@
 .home-hero h3 {
   font-size: 1.15rem;
   font-weight: 600;
-  color: inherit;
-  /* inherits h1 colour */
+  color: var(--H2H3P-Colour);
   margin: 0.75rem 0 1.25rem;
 }
 
