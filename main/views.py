@@ -47,10 +47,6 @@ def contact(request):
     return render(request, "contact.html", {"form": form})
 
 
-def about(request):
-    return render(request, "about.html")
-
-
 def project(request, id):
     """
     Full project detail page.
