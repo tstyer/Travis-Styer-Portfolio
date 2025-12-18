@@ -101,11 +101,20 @@
   gap: 1.25rem;
 }
 
-/* paragraph left-aligned for readability */
-.home-hero__bottom .tag-line {
-  text-align: left;
+/* Make the hero paragraph a neat, squared block */
+.home-hero__bottom .tag-line p {
+  max-width: 60ch;
+  /* makes it narrower (try 55–65ch) */
+  text-align: justify;
+  /* squares off the sides */
+  text-justify: inter-word;
+  /* nicer spacing between words */
+  hyphens: auto;
+  /* helps avoid ugly gaps (needs lang="en") */
   margin: 0;
+  /* keep it snug in the layout */
 }
+
 
 /* avatar */
 .home-hero__image img {
