@@ -50,8 +50,8 @@
 
           {# ---- Permission gate: show controls only to owner (or staff) ---- #}
           {% with
-            session_name=request.session.user_name
-            session_email=request.session.user_email
+            session_name=request.session|get:"user_name"
+            session_email=request.session|get:"user_email"
           %}
 
             {% if request.user.is_authenticated and request.user.is_staff %}
