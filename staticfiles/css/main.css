@@ -282,7 +282,7 @@ footer {
 }
 
 .social {
-  fill: var(--H1H3-Colour);
+  fill: var(--H1-Colour);
 }
 
 .social:hover {
