@@ -406,6 +406,8 @@ def auth_register(request):
     request.session["user_email"] = email
     request.session["user_name"] = username
 
+    messages.success(request, f"Account created. Signed in as {username}.")
+
     return JsonResponse({"success": True, "username": username})
 
 
