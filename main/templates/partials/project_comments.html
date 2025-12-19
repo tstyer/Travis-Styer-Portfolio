@@ -48,14 +48,14 @@
 
             {# ---- Permission gate ---- #}
             {% if request.user.is_authenticated and request.user.is_staff %}
-              {% include "partials/comment_controls.html" %}
-            {% elif c.user and request.user.is_authenticated and request.user == c.user %}
-              {% include "partials/comment_controls.html" %}
-            {% elif not c.user and c.author_name and session_name == c.author_name %}
-              {% include "partials/comment_controls.html" %}
-            {% elif not c.user and c.author_email and session_email == c.author_email %}
-              {% include "partials/comment_controls.html" %}
-            {% endif %}
+  {% include "partials/comment_controls.html" with project=project c=c %}
+{% elif c.user and request.user.is_authenticated and request.user == c.user %}
+  {% include "partials/comment_controls.html" with project=project c=c %}
+{% elif not c.user and c.author_name and session_name == c.author_name %}
+  {% include "partials/comment_controls.html" with project=project c=c %}
+{% elif not c.user and c.author_email and session_email == c.author_email %}
+  {% include "partials/comment_controls.html" with project=project c=c %}
+{% endif %}
           </div>
         </header>
 
