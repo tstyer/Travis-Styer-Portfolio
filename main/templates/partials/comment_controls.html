@@ -4,23 +4,20 @@
   <a
     class="btn btn-sm btn-outline-secondary"
     href="{% url 'comment_update' project.id c.id %}"
-    aria-label="Edit comment"
-  >
+    aria-label="Edit comment">
     Edit
   </a>
 
   <form
     method="post"
     action="{% url 'comment_delete' project.id c.id %}"
-    style="display:inline"
-  >
+    style="display:inline">
     {% csrf_token %}
     <button
       type="submit"
       class="btn btn-sm btn-outline-danger"
       aria-label="Delete comment"
-      onclick="return confirm('Delete this comment?');"
-    >
+      onclick="return confirm('Delete this comment?');">
       Delete
     </button>
   </form>

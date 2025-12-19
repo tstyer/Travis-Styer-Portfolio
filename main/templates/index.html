@@ -6,8 +6,8 @@ Travis Styer
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}" />
-<link rel="stylesheet" href="{% static 'css/project.css' %}" />
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/project.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -33,8 +33,7 @@ Travis Styer
     <div class="home-hero__image">
       <img
         src="{% static 'images/avataaars.png' %}"
-        alt="Illustration of Travis Styer"
-      />
+        alt="Illustration of Travis Styer">
     </div>
   </div>
 </header>
@@ -44,15 +43,13 @@ Travis Styer
     <input
       type="text"
       id="name-search"
-      placeholder="Search by project"
-    />
+      placeholder="Search by project">
 
     <div class="tags-list">
       {% for tag in tags %}
         <button
           class="tag"
-          data-tag="{{ tag.name|lower|escape }}"
-        >
+          data-tag="{{ tag.name|lower|escape }}">
           {{ tag.name }}
         </button>
       {% empty %}
@@ -67,14 +64,12 @@ Travis Styer
         class="project-card"
         data-name="{{ project.title|lower|escape }}"
         data-tags="{% for tag in project.tags.all %}{{ tag.name|lower|escape }} {% endfor %}"
-        data-project-id="{{ project.id }}"
-      >
+        data-project-id="{{ project.id }}">
         <h2>
           <a
             href="javascript:void(0)"
             class="project-info-link"
-            data-project-id="{{ project.id }}"
-          >
+            data-project-id="{{ project.id }}">
             {{ project.title }}
           </a>
         </h2>
@@ -113,8 +108,8 @@ Travis Styer
     <button
       class="project-info-modal__close"
       type="button"
-      aria-label="Close"
-    ></button>
+      aria-label="Close">
+    </button>
 
     <div id="project-info-modal-body">
       <h2 id="project-info-title"></h2>
@@ -123,8 +118,7 @@ Travis Styer
         id="project-info-github"
         href="#"
         target="_blank"
-        rel="noopener"
-      >
+        rel="noopener">
         View on GitHub
       </a>
     </div>

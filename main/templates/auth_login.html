@@ -7,8 +7,8 @@ Sign in to comment
 
 {% block extra_css %}
 {# Only include what this page needs (main.css is already in base.html) #}
-<link rel="stylesheet" href="{% static 'css/contact.css' %}" />
-<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -40,8 +40,7 @@ Sign in to comment
                 class="form-control"
                 required
                 value="{{ email|default:'' }}"
-                placeholder="you@example.com"
-              />
+                placeholder="you@example.com">
             </div>
 
             <div class="mb-3">
@@ -54,16 +53,14 @@ Sign in to comment
                 id="id_password"
                 class="form-control"
                 required
-                placeholder="Your password"
-              />
+                placeholder="Your password">
             </div>
 
             {# Redirect back to where user came from, fallback to home #}
             <input
               type="hidden"
               name="next"
-              value="{{ request.GET.next|default:request.META.HTTP_REFERER|default_if_none:'' }}"
-            />
+              value="{{ request.GET.next|default:request.META.HTTP_REFERER|default_if_none:'' }}">
 
             <div class="d-grid">
               <button type="submit" class="btn btn-primary">

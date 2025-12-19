@@ -10,7 +10,7 @@ wrapper contact-page
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/contact.css' %}" />
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -36,8 +36,7 @@ wrapper contact-page
         method="post"
         action="{% url 'contact' %}"
         class="contact-form"
-        novalidate
-      >
+        novalidate>
         {% csrf_token %}
 
         {# Non-field (form-wide) errors #}
