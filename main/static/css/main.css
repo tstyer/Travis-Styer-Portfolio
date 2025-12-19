@@ -457,6 +457,29 @@ footer {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
+.comment-delete-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.4rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #3ad1c1, #76e7ff);
+  color: #249988;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.1s ease;
+}
+
+.comments-delete-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.comments-delete-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
 .comment-btn {
   background: rgba(47, 187, 170, 0.1);
   border: 1px solid rgba(47, 187, 170, 0.35);
