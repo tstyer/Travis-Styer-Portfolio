@@ -33,10 +33,7 @@
 {# ---------- SCROLLABLE COMMENTS LIST ---------- #}
 <div class="comments-scroll">
   {% for c in comments %}
-    {% with
-      session_name=request.session.user_name
-      session_email=request.session.user_email
-    %}
+    {% with session_name=request.session.user_name session_email=request.session.user_email %}
       <article class="comment-card">
         <header class="comment-card__meta">
           <span class="comment-card__author">
