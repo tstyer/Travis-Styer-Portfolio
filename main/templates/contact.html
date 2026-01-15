@@ -15,9 +15,9 @@ wrapper contact-page
 
 {% block content %}
 
-<header>
+<header class="contact-header">
   <h1>Get In Touch</h1>
-  <h3>Send me a message below!</h3>
+  <h2 class="contact-subheading">Send me a message below!</h2>
 </header>
 
 {# Flash messages #}
@@ -31,6 +31,9 @@ wrapper contact-page
 
 <main>
   <section class="contact-section">
+    {# Required section heading for accessibility / validation #}
+    <h2 class="visually-hidden">Contact form</h2>
+
     <div class="contact-card">
       <form
         method="post"
@@ -39,7 +42,6 @@ wrapper contact-page
         novalidate>
         {% csrf_token %}
 
-        {# Non-field (form-wide) errors #}
         {% if form.non_field_errors %}
           <div class="form-errors">
             {{ form.non_field_errors }}
