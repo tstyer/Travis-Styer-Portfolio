@@ -14,9 +14,9 @@ Travis Styer
 
 <header class="home-hero">
   <div class="home-hero__top">
-    <h2>FRONTEND JAVASCRIPT DEVELOPER</h2>
+    <p class="hero-tagline">FRONTEND JAVASCRIPT DEVELOPER</p>
     <h1>Travis Styer</h1>
-    <h3>Click the tags to see my work</h3>
+    <h2>Click the tags to see my work</h2>
   </div>
 
   <div class="home-hero__bottom">
@@ -40,6 +40,8 @@ Travis Styer
 
 <main>
   <section class="filters">
+    <h2 class="visually-hidden">Project filters</h2>
+
     <input
       type="text"
       id="name-search"
@@ -59,20 +61,23 @@ Travis Styer
   </section>
 
   <section class="projects-list">
+    <h2 class="visually-hidden">Projects</h2>
+
     {% for project in projects %}
       <div
         class="project-card"
         data-name="{{ project.title|lower|escape }}"
         data-tags="{% for tag in project.tags.all %}{{ tag.name|lower|escape }} {% endfor %}"
         data-project-id="{{ project.id }}">
-        <h2>
+
+        <h3 class="project-title">
           <a
-            href="javascript:void(0)"
+            href="#"
             class="project-info-link"
             data-project-id="{{ project.id }}">
             {{ project.title }}
           </a>
-        </h2>
+        </h3>
 
         <p>{{ project.description }}</p>
 
@@ -112,7 +117,7 @@ Travis Styer
     </button>
 
     <div id="project-info-modal-body">
-      <h2 id="project-info-title"></h2>
+      <h2 id="project-info-title">Project info</h2>
       <p id="project-info-description"></p>
       <a
         id="project-info-github"
